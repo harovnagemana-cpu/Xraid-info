@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xraid Main</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1a1a1a;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin-bottom: 5px;
+        }
+
+        .tabs {
+            display: flex;
+            background-color: #444;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 15px 20px;
+            background-color: #444;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+            text-align: center;
+        }
+
+        .tab-button:hover {
+            background-color: #555;
+        }
+
+        .tab-button.active {
+            background-color: #007bff;
+            border-bottom: 3px solid #0056b3;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 30px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .content-text {
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .content-image {
+            max-width: 100%;
+            height: auto;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+
+        .italic-text {
+            font-style: italic;
+        }
+
+        .redirect-button {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: red;
+            text-decoration: none;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+
+        .redirect-button:hover {
+            background-color: #0056b3;
+            box-shadow: 0 0 20px rgba(0, 200, 255, 1), 0 0 30px rgba(0, 123, 255, 0.8), 0 0 40px rgba(100, 200, 255, 0.6), inset 0 0 20px rgba(0, 200, 255, 0.3);
+            animation: electricity 0.5s infinite;
+        }
+
+        @keyframes electricity {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(0, 200, 255, 1), 0 0 30px rgba(0, 123, 255, 0.8), 0 0 40px rgba(100, 200, 255, 0.6), inset 0 0 20px rgba(0, 200, 255, 0.3);
+            }
+            50% {
+                box-shadow: 0 0 30px rgba(0, 255, 255, 1), 0 0 40px rgba(0, 200, 255, 1), 0 0 60px rgba(100, 220, 255, 0.8), inset 0 0 30px rgba(0, 255, 255, 0.5);
+            }
+        }
+
+        .warning-marquee {
+            background-color: #ffcccc;
+            color: #cc0000;
+            padding: 10px;
+            margin-top: 15px;
+            border: 2px solid #cc0000;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .watermark {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.2;
+            z-index: 1;
+            pointer-events: none;
+            background-image: url('images/Screenshot 2026-01-24 212555.png');
+            background-size: contain;
+            background-repeat: repeat;
+            background-position: center;
+        }
+
+        .enemy-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .enemy-item {
+            padding: 12px 15px;
+            background: linear-gradient(135deg, #8B0000 0%, #DC143C 100%);
+            color: #fff;
+            border-left: 5px solid #8B0000;
+            border-radius: 5px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+            box-shadow: 0 4px 8px rgba(139, 0, 0, 0.5), inset 0 0 10px rgba(255, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .enemy-name {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .enemy-name::before {
+            content: '● ';
+            color: #8B0000;
+            margin-right: 5px;
+        }
+
+        .enemy-info {
+            font-size: 14px;
+            font-style: italic;
+            font-weight: normal;
+            margin: 0;
+            color: #fff;
+            line-height: 1.4;
+        }
+
+        .additional-info-box {
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .additional-info-box p {
+            padding: 12px;
+            border: 2px solid #8B0000;
+            border-radius: 5px;
+            background-color: #fff;
+            color: #333;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.6;
+            box-shadow: 0 2px 5px rgba(139, 0, 0, 0.3);
+            margin: 0;
+        }
+
+        @keyframes blood-drip {
+            0% {
+                left: -100%;
+            }
+            100% {
+                left: 100%;
+            }
+        }
+
+        .fire-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .fire-item {
+            padding: 10px 15px;
+            background-color: #f5f5f5;
+            color: #333;
+            border-radius: 5px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+            border-left: 4px solid #ff6600;
+        }
+
+        .fire-item:hover {
+            background-color: #fff;
+            color: #ff4500;
+            font-weight: bold;
+            box-shadow: 0 0 15px rgba(255, 69, 0, 0.6), inset 0 0 10px rgba(255, 102, 0, 0.3);
+            box-shadow: 0 0 20px rgba(255, 69, 0, 0.7);
+        }
+
+        .fire-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 30px;
+            background: linear-gradient(180deg, #ff0000 0%, #ff6600 50%, #ffcc00 100%);
+            opacity: 0;
+            filter: blur(2px);
+        }
+
+        .fire-item:hover::before {
+            animation: flame-burst 0.6s ease-out infinite;
+        }
+
+        .fire-item::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 30px;
+            background: linear-gradient(180deg, #ff0000 0%, #ff6600 50%, #ffcc00 100%);
+            opacity: 0;
+            filter: blur(2px);
+        }
+
+        .fire-item:hover::after {
+            animation: flame-burst 0.6s ease-out 0.1s infinite;
+        }
+
+        @keyframes fire-flicker {
+            0%, 100% {
+                box-shadow: 0 0 15px rgba(255, 69, 0, 0.6), inset 0 0 10px rgba(255, 102, 0, 0.3);
+            }
+            50% {
+                box-shadow: 0 0 25px rgba(255, 102, 0, 0.8), inset 0 0 15px rgba(255, 140, 0, 0.5);
+            }
+        }
+
+        @keyframes flame-burst {
+            0% {
+                opacity: 0;
+                transform: translateY(-50%) scaleY(0.5);
+                filter: blur(2px);
+            }
+            50% {
+                opacity: 1;
+                filter: blur(1px);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-80%) scaleY(0.8);
+                filter: blur(4px);
+            }
+        }
+
+        .fire-item-container {
+            margin-bottom: 0;
+        }
+
+        .fire-item {
+            cursor: pointer;
+        }
+
+        .fire-info-box {
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: max-height 0.4s ease, opacity 0.4s ease, padding 0.4s ease;
+            background-color: #fff3cd;
+            border: 2px solid #ff6600;
+            border-top: none;
+            border-bottom-left-radius: 5px;
+            border-bottom-right-radius: 5px;
+            margin-left: 15px;
+            margin-right: 0;
+            margin-bottom: 10px;
+        }
+
+        .fire-info-box.active {
+            max-height: 200px;
+            opacity: 1;
+            padding: 15px;
+        }
+
+        .fire-info-box p {
+            margin: 0;
+            color: #333;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .glowing-text {
+            color: #00ff00;
+            font-weight: bold;
+            text-shadow: 0 0 10px #00ff00, 0 0 20px #00aa00, 0 0 30px #007700;
+            animation: glow-pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes glow-pulse {
+            0%, 100% {
+                text-shadow: 0 0 10px #00ff00, 0 0 20px #00aa00, 0 0 30px #007700;
+            }
+            50% {
+                text-shadow: 0 0 20px #00ff00, 0 0 30px #00ff00, 0 0 40px #00aa00;
+            }
+        }
+
+        .game-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #87ceeb;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .game-area {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(180deg, #87ceeb 0%, #e0f6ff 100%);
+            overflow: hidden;
+            border-bottom: 5px solid #333;
+        }
+
+        .game-bunny {
+            position: absolute;
+            width: 35px;
+            height: 35px;
+            bottom: 120px;
+            left: 50px;
+            z-index: 10;
+        }
+
+        .bunny-game-body {
+            position: absolute;
+            width: 40px;
+            height: 32px;
+            background-color: #fff;
+            border-radius: 50%;
+            border: 2px solid #333;
+            bottom: 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .bunny-game-ears {
+            position: absolute;
+            width: 6px;
+            height: 20px;
+            background-color: #fff;
+            border-radius: 50%;
+            border: 2px solid #333;
+            top: -18px;
+        }
+
+        .bunny-game-ears:first-child {
+            left: 8px;
+        }
+
+        .bunny-game-ears:nth-child(2) {
+            right: 8px;
+        }
+
+        .game-obstacle {
+            position: absolute;
+            width: 40px;
+            height: 60px;
+            background-color: #8B4513;
+            bottom: 120px;
+            border-radius: 5px 5px 0 0;
+            box-shadow: inset -2px 0 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .game-ground {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 70px;
+            background: linear-gradient(180deg, #228B22 0%, #1a6b1a 100%);
+            border-top: 3px solid #000;
+        }
+
+        .game-ground::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: repeating-linear-gradient(
+                90deg,
+                transparent,
+                transparent 15px,
+                rgba(0, 0, 0, 0.1) 15px,
+                rgba(0, 0, 0, 0.1) 30px
+            );
+        }
+
+        .game-ui {
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #333;
+            color: white;
+            font-weight: bold;
+        }
+
+        .game-score {
+            font-size: 18px;
+        }
+
+        .game-button {
+            padding: 8px 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .game-button:hover {
+            background-color: #0056b3;
+        }
+
+        .game-over {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            z-index: 100;
+            display: none;
+        }
+
+        .game-over h3 {
+            font-size: 32px;
+            margin: 0 0 15px 0;
+        }
+
+        .game-over p {
+            font-size: 18px;
+            margin: 10px 0;
+        }
+
+        .instructions {
+            background-color: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            color: #333;
+        }
+
+        #tab5 {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        #tab5::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 10% 20%, #ff0000 0%, transparent 50%),
+                radial-gradient(circle at 20% 80%, #00ff00 0%, transparent 50%),
+                radial-gradient(circle at 40% 10%, #ffff00 0%, transparent 50%),
+                radial-gradient(circle at 60% 60%, #ff6600 0%, transparent 50%),
+                radial-gradient(circle at 80% 30%, #ff0000 0%, transparent 50%),
+                radial-gradient(circle at 90% 70%, #00ff00 0%, transparent 50%);
+            pointer-events: none;
+            opacity: 0.3;
+            animation: twinkle-lights 1.5s ease-in-out infinite;
+        }
+
+        @keyframes twinkle-lights {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 0.4; }
+        }
+
+        #tab5 .content-text {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background-color: rgba(0, 0, 0, 0.6);
+            padding: 20px;
+            border-radius: 8px;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        #tab5 h2 {
+            position: relative;
+            z-index: 1;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.5), 0 0 20px rgba(0, 255, 0, 0.3);
+        }
+
+        .corner-lamp {
+            position: absolute;
+            width: 180px;
+            height: 100px;
+            top: 0;
+            z-index: 2;
+        }
+
+        .corner-lamp.left {
+            left: 0;
+        }
+
+        .corner-lamp.right {
+            right: 0;
+        }
+
+        .light-wire {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+
+        .light-bulb {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #ffff00, #ff6600);
+            box-shadow: 0 0 10px rgba(255, 255, 0, 0.8);
+            transform: translate(-50%, -50%);
+        }
+
+        @keyframes bulb-flash {
+            0%, 100% {
+                background: radial-gradient(circle at 30% 30%, #ffff00, #ff6600);
+                box-shadow: 0 0 10px rgba(255, 255, 0, 0.8);
+            }
+            50% {
+                background: radial-gradient(circle at 30% 30%, #ffffff, #ffff00);
+                box-shadow: 0 0 20px rgba(255, 255, 100, 1);
+            }
+        }
+
+        /* Left corner bulbs - positioned along semicircle arc */
+        .light-bulb:nth-child(2) { left: 20px; top: 12px; animation: bulb-flash 1s ease-in-out infinite; }
+        .light-bulb:nth-child(3) { left: 50px; top: 48px; animation: bulb-flash 1s ease-in-out 0.1s infinite; }
+        .light-bulb:nth-child(4) { left: 90px; top: 78px; animation: bulb-flash 1s ease-in-out 0.2s infinite; }
+        .light-bulb:nth-child(5) { left: 130px; top: 48px; animation: bulb-flash 1s ease-in-out 0.3s infinite; }
+        .light-bulb:nth-child(6) { left: 160px; top: 12px; animation: bulb-flash 1s ease-in-out 0.4s infinite; }
+
+        /* Right corner bulbs - positioned along mirrored semicircle arc */
+        .corner-lamp.right .light-bulb:nth-child(2) { right: 20px; left: auto; top: 12px; animation: bulb-flash 1s ease-in-out infinite; }
+        .corner-lamp.right .light-bulb:nth-child(3) { right: 50px; left: auto; top: 48px; animation: bulb-flash 1s ease-in-out 0.1s infinite; }
+        .corner-lamp.right .light-bulb:nth-child(4) { right: 90px; left: auto; top: 78px; animation: bulb-flash 1s ease-in-out 0.2s infinite; }
+        .corner-lamp.right .light-bulb:nth-child(5) { right: 130px; left: auto; top: 48px; animation: bulb-flash 1s ease-in-out 0.3s infinite; }
+        .corner-lamp.right .light-bulb:nth-child(6) { right: 160px; left: auto; top: 12px; animation: bulb-flash 1s ease-in-out 0.4s infinite; }
+
+        .bunny-animation {
+            margin-top: 30px;
+            text-align: center;
+            min-height: 120px;
+            position: relative;
+        }
+
+        .grass {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 30px;
+            background: linear-gradient(180deg, #2d5016 0%, #1a3a0a 100%);
+            border-radius: 5px;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        .grass::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: repeating-linear-gradient(
+                90deg,
+                transparent,
+                transparent 10px,
+                rgba(0, 255, 0, 0.2) 10px,
+                rgba(0, 255, 0, 0.2) 20px
+            );
+        }
+
+        .bunny {
+            position: absolute;
+            bottom: 35px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 40px;
+            animation: bunny-jump 1.5s ease-in-out infinite;
+        }
+
+        .bunny-body {
+            position: absolute;
+            width: 40px;
+            height: 32px;
+            background-color: #fff;
+            border-radius: 50%;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 2px solid #333;
+        }
+
+        .bunny-ears {
+            position: absolute;
+            width: 8px;
+            height: 25px;
+            background-color: #fff;
+            border-radius: 50%;
+            border: 2px solid #333;
+            top: -20px;
+            animation: ears-wiggle 0.3s ease-in-out infinite;
+        }
+
+        .bunny-ears:first-of-type {
+            left: 8px;
+            animation-delay: 0s;
+        }
+
+        .bunny-ears:last-of-type {
+            right: 8px;
+            animation-delay: 0.15s;
+        }
+
+        .bunny-eyes {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background-color: #333;
+            border-radius: 50%;
+            top: 5px;
+        }
+
+        .bunny-eyes:first-of-type {
+            left: 6px;
+        }
+
+        .bunny-eyes:last-of-type {
+            right: 6px;
+        }
+
+        @keyframes bunny-jump {
+            0%, 100% {
+                bottom: 35px;
+            }
+            50% {
+                bottom: 80px;
+            }
+        }
+
+        @keyframes ears-wiggle {
+            0%, 100% {
+                transform: rotate(0deg);
+            }
+            50% {
+                transform: rotate(15deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Welcome to Xraid Main</h1>
+            <p>This is the main page for Xraid, our dear clan. Here, you can see leaked information and what are clans.</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-button active" onclick="openTab(event, 'tab1')">Our clan</button>
+            <button class="tab-button" onclick="openTab(event, 'tab2')">What are our enemies?</button>
+            <button class="tab-button" onclick="openTab(event, 'tab3')">How to act and what different words mean?</button>
+            <button class="tab-button" onclick="openTab(event, 'tab4')">Leaked information</button>
+            <button class="tab-button" onclick="openTab(event, 'tab5')">Our raids and results</button>
+        </div>
+
+        <div id="tab1" class="tab-content active">
+            <h2>Xraid</h2>
+            <p class="content-text italic-text">Xraid is one of official clans that is currently developing to it's most. XR has a total of 5000+ members and we make best raids, snipes, wars, trainings, tryouts, fun events and more that stay behind the clan. Our primary goal is to get the highest level raids and quality to all our attendees.Xraid owners are: 1. Keeqo 2. Axiity. This is the trailer: if you wish to see media. Also, if you want to join the clan, press the button below. </p>
+            <a href="https://medal.tv/games/roblox/clips/lZP1dCIJnPKKYDUGp?invite=cr-MSwzTEosNDEzMDI0Mjkw&v=35" class="redirect-button" target="_blank">View Trailer</a>
+            <a href="https://discord.gg/QwbXFq9T" class="redirect-button" target="_blank">Join the clan here!</a>
+            <marquee class="warning-marquee">The trailer has soft flashes and aggresive sound. Not recommended if you have any problems with eyes or ears. The clip is being watched on your own risk.</marquee>
+        </div>
+
+        <div id="tab2" class="tab-content">
+            <h2>Our primary enemies</h2>
+            <p class="content-text">Our primary enemies are:</p>
+            <div class="enemy-list">
+                <div class="enemy-item">
+                    <div class="enemy-name">BRSQ ( Barrio Squad )</div>
+                    <p class="enemy-info">Most common clan that we meet almost in every our raid. They are strong against others but we are stronger than this bums.</p>
+                </div>
+                <div class="enemy-item">
+                    <div class="enemy-name">KR (Krimson)</div>
+                    <p class="enemy-info">KR clan loves coming with BRSQ, if we meet them alone and raid, the raid will be over in over 20 minutes with victory on our side. If BRSQ joins the raid will just get longer but we will win of course.</p>
+                </div>
+                <div class="enemy-item">
+                    <div class="enemy-name">TSL (Unknown)</div>
+                    <p class="enemy-info">TSL often comes with BRSQ and KR, because they can't fight alone. They have many exploiters which makes them weak.</p>
+                </div>
+                <div class="enemy-item">
+                    <div class="enemy-name">VH (Unknown)</div>
+                    <p class="enemy-info">This is a passive clan that doesn't engage in many battles.</p>
+                </div>
+                <div class="enemy-item">
+                    <div class="enemy-name">Apex (Apex)</div>
+                    <p class="enemy-info">Apex is also a passive clan that won us only ONCE and no more.</p>
+                </div>
+            </div>
+            <div class="additional-info-box">
+                <p>Those enemy clans are all talking about Axiity and XR but don't look at their clan. In fact, they see a hair in our eyes but not a whole log in theirs. They believe Xraid is a dead clan, but they got proven wrong....</p>
+            </div>
+        </div>
+       
+        
+
+        <div id="tab3" class="tab-content">
+            <h2>Different Words and abbreviations</h2>
+            <div class="fire-list">
+                <div class="fire-item-container">
+                    <div class="fire-item" onclick="toggleInfo(this)">BG (BGing)</div>
+                    <div class="fire-info-box"><p>BG means Background Fighting which means fighting in the background while the main battle is happening. When someone says "You're bging", it means you  are fighting in the background. BG often presents as a negative meaning because you are usually not allowed to bg at trainings/tryouts.</p></div>
+                </div>
+                <div class="fire-item-container">
+                    <div class="fire-item" onclick="toggleInfo(this)">P2W</div>
+                    <div class="fire-info-box"><p>P2W means "Pay to Win" which means you pay real money to get previlligies in the game that others don't have if they didn't buy it. It is strictly prohibited to use in any events inside the clan except for raids, snipers or even sometimes wars..</p></div>
+                </div>
+                <div class="fire-item-container">
+                    <div class="fire-item" onclick="toggleInfo(this)">qed</div>
+                    <div class="fire-info-box"><p>qed meams (quarantined) which often refers in a form "You will get qed" or "I got qed". It can also be "quaraed" like "why do you try to quara him" or "why did he get unquaraed?".</p></div>
+                </div>
+                <div class="fire-item-container">
+                    <div class="fire-item" onclick="toggleInfo(this)">EU, NA </div>
+                    <div class="fire-info-box"><p>EU stands for Europe and NA stands for North America. It is being used in tryouts, trainings and other events where region is mandatory to know the ping so the event is comfortable for all attendees</p></div>
+                </div>
+                <div class="fire-item-container">
+                    <div class="fire-item" onclick="toggleInfo(this)">ft</div>
+                    <div class="fire-info-box"><p>ft means "first to" e.g. ft5 means first-to-5 which means, first one to get 5 points in a fight, wins. Ft also has 3 characters: Garou, Saitama and Metal bat. In ft battles ping abuse techs or m1 resets or bug abuses, are prohibited.</p></div>
+                </div>
+                <div class="fire-item-container">
+                    <div class="fire-item" onclick="toggleInfo(this)">KOS</div>
+                    <div class="fire-info-box"><p>KOS means Kill On Sight which means, everyone listed in KOS, if seen, to be eliminated/killed immidiately without hesitation. Before killing make sure they are not in Xraid with fake user and not in KOS, otherwise you will be punished for in-clan teaming..</p></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab4" class="tab-content">
+            <h2>Leaked - Bunny Jump Game</h2>
+            <p class="content-text glowing-text">Play the Bunny Jump Game while waiting for leaked information!</p>
+            
+            <div class="instructions">
+                <strong>How to Play:</strong> Press <strong>SPACE</strong> or <strong>CLICK</strong> to make the bunny jump! Avoid the obstacles and get the highest score.
+            </div>
+
+            <div class="game-container">
+                <div class="game-area" id="gameArea">
+                    <div class="game-bunny" id="bunny">
+                        <div class="bunny-game-ears"></div>
+                        <div class="bunny-game-ears"></div>
+                        <div class="bunny-game-body"></div>
+                    </div>
+                    <div class="game-ground"></div>
+                    <div class="game-over" id="gameOverScreen">
+                        <h3>Game Over!</h3>
+                        <p id="finalScore">Score: 0</p>
+                        <button class="game-button" onclick="restartGame()">Play Again</button>
+                    </div>
+                </div>
+                <div class="game-ui">
+                    <div class="game-score">Score: <span id="score">0</span></div>
+                    <button class="game-button" id="startButton" onclick="startGame()">Start Game</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab5" class="tab-content">
+    <!-- ЛЕВЫЙ УГОЛ -->
+<div class="corner-lamp left">
+<svg viewBox="0 0 180 100" width="180" height="100">
+
+    <defs>
+        <filter id="glow-left">
+            <feGaussianBlur stdDeviation="3" result="blur">
+                <animate attributeName="stdDeviation"
+                         values="2;5;2"
+                         dur="1.5s"
+                         repeatCount="indefinite"/>
+            </feGaussianBlur>
+            <feMerge>
+                <feMergeNode in="blur"/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
+    </defs>
+
+    <!-- ПРОВОД -->
+    <path d="M10 15 Q90 95 170 15"
+          stroke="#2b2b2b"
+          stroke-width="4"
+          fill="none"/>
+
+    <!-- ЛАМПОЧКИ (ВСЕ НА ЛИНИИ) -->
+    <circle cx="10"  cy="15" r="6" fill="#ffcc00" filter="url(#glow-left)"/>
+    <circle cx="50"  cy="45" r="6" fill="#ff6600" filter="url(#glow-left)"/>
+    <circle cx="90"  cy="75" r="6" fill="#ffff00" filter="url(#glow-left)"/>
+    <circle cx="130" cy="45" r="6" fill="#ff6600" filter="url(#glow-left)"/>
+    <circle cx="170" cy="15" r="6" fill="#ffcc00" filter="url(#glow-left)"/>
+
+</svg>
+</div>
+
+<!-- ПРАВЫЙ УГОЛ -->
+<div class="corner-lamp right">
+<svg viewBox="0 0 180 100" width="180" height="100">
+
+    <defs>
+        <filter id="glow-right">
+            <feGaussianBlur stdDeviation="3" result="blur">
+                <animate attributeName="stdDeviation"
+                         values="2;5;2"
+                         dur="1.5s"
+                         repeatCount="indefinite"/>
+            </feGaussianBlur>
+            <feMerge>
+                <feMergeNode in="blur"/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
+    </defs>
+
+    <!-- ПРОВОД -->
+    <path d="M170 15 Q90 95 10 15"
+          stroke="#2b2b2b"
+          stroke-width="4"
+          fill="none"/>
+
+    <!-- ЛАМПОЧКИ -->
+    <circle cx="170" cy="15" r="6" fill="#ffcc00" filter="url(#glow-right)"/>
+    <circle cx="130" cy="45" r="6" fill="#ff6600" filter="url(#glow-right)"/>
+    <circle cx="90"  cy="75" r="6" fill="#ffff00" filter="url(#glow-right)"/>
+    <circle cx="50"  cy="45" r="6" fill="#ff6600" filter="url(#glow-right)"/>
+    <circle cx="10"  cy="15" r="6" fill="#ffcc00" filter="url(#glow-right)"/>
+
+</svg>
+</div>
+
+            <h2>Raids</h2>
+            <p class="content-text">```
+*RAID: Friend group vs VH & S1N:                             Victory (03/08/25)* (random enemy clans)                                     🟢
+*RAID: Friend group,Xyris vs BRSQ,G.O.A.T,GR,SG,S1N,TSL:     Victory (08/08/25)* (6 piece mid clans) (they use bug abuse 7 times for win) 🟢
+*RAID: Friend group vs volholla:                             Victory (14/09/25)*                                                          🟢
+*RAID: we vs volholla and more:                              Victory (17/09/25)*                                                          🟢
+*RAID: we vs sg:                                             draw    (18/09/25)*                                                          ⚫
+*RAID: we vs sg + vh:                                        Victory (23/09/25)*                                                          🟢
+*RAID: we vs brsq and more:                                  Victory (25/09/25)* (roguban folded)                                         🟢
+*RAID: we + HR vs FA + TRZ + TRS                             Victory (30/09/25)*                                                          🟢
+*RAID: we + Xiver vs SYNX                                    Victory (03/09/25)* (we line mvp)                                            🟢
+*RAID: we + Xiver vs BRSQ + KR + GR                          Victory (03/09/25)*                                                          🟢
+*RAID: we vs BRSQ + SWAT                                     Victory (03/09/25)* (BRSQ DOGS TRYING RAID IN JJS)                           🟢
+*RAID: we + HR vs BRSQ                                       Victory (04/10/25)*                                                          🟢
+*RAID: we + HR vs KR + VQS + NC + GR + BRSQ                  Victory (04/10/25)*                                                          🟢
+*RAID: We + Abyss + HR + TRU + ASL + UoH + Xi vs GR + BRSQ   Victory (07/10/25)*                                                          🟢      
+*RAID: We + Abyss + HR + UoH vs GR + BRSQ + VH + KR          Victory (08/10/25)*                                                          🟢      
+*RAID: We + Abyss + HR + UoH + vs TSL + BRSQ + VH + KR       Victory (08/10/25)*                                                          🟢         
+*RAID: We + ZYRA vs SynX + YR + QLST                         Victory (10/10/25)*                                                          🟢  
+*RAID: We + UoH + ZYRA vs UoHR x SG                          Victory (10/10/25)*                                                          🟢  
+*RAID: We + Abyss + ZYRA vs BRSQ + KR + VH                   Victory (11/10/25)*                                                          🟢  
+*RAID: We + Abyss vs AE + Objective + VH                     Victory (11/10/25)*                                                          🟢  
+*RAID: We vs gr or vh                                        Retreat (19/10/25)*                                                          ⚫ 
+*RAID: We + Youtube Backup vs GR + VH + OBJECTIVE            Victory (20/10/25)* (they got dominated by youtube backup)                   🟢  
+*RAID: We + SCL + Youtube Backup vs BRSQ                     Victory (25/10/25)* (160 lines from us + brsq fake ss)                       🟢  
+*RAID: We + Youtube Backup vs SG + VH                        Victory (05/11/25)*                                                          🟢  
+```
+
+```
+**WAR: Friend group vs ESH:           0-5 Defeat      (08/08/25)*  (neutral clan) (NA region) 🔴
+**WAR: Friend group vs ESH:           5-2 Victory     (08/08/25)*  (neutral clan) (EU region) 🟢
+```
+
+```
+----  Win/Lose 
+1v1:  13/8 ⚔️
+Raid: 19/0 🔥
+War:  1/1 ⚔️ 
+```
+
+***# Friends,Allies Score archive 2***
+*based real scores against enemies of our community* </p>
+        </div>
+    </div>
+
+    <div class="watermark"></div>
+
+    <script>
+        function openTab(evt, tabName) {
+            // Hide all tab contents
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // Remove active class from all buttons
+            const buttons = document.querySelectorAll('.tab-button');
+            buttons.forEach(button => {
+                button.classList.remove('active');
+            });
+
+            // Show the current tab content
+            document.getElementById(tabName).classList.add('active');
+
+            // Add active class to the clicked button
+            evt.currentTarget.classList.add('active');
+        }
+
+        function toggleInfo(element) {
+            // Get the parent container and the info box
+            const container = element.parentElement;
+            const infoBox = container.querySelector('.fire-info-box');
+            
+            // Close all other info boxes
+            const allBoxes = document.querySelectorAll('.fire-info-box');
+            allBoxes.forEach(box => {
+                if (box !== infoBox) {
+                    box.classList.remove('active');
+                }
+            });
+            
+            // Toggle the current info box
+            infoBox.classList.toggle('active');
+        }
+
+        // Bunny Jump Game Variables
+        let gameActive = false;
+        let bunnyPos = 120;
+        let bunnyVelocity = 0;
+        let gravity = -0.6;
+        let jumpPower = 15;
+        let score = 0;
+        let obstacles = [];
+        let gameSpeed = 6;
+        let spawnRate = 100;
+        let spawnCounter = 0;
+
+        const gameArea = document.getElementById('gameArea');
+        const bunny = document.getElementById('bunny');
+        const scoreDisplay = document.getElementById('score');
+        const gameOverScreen = document.getElementById('gameOverScreen');
+        const finalScore = document.getElementById('finalScore');
+        const startButton = document.getElementById('startButton');
+
+        function startGame() {
+            gameActive = true;
+            gameOverScreen.style.display = 'none';
+            score = 0;
+            scoreDisplay.textContent = '0';
+            
+            // Clear old obstacles from DOM
+            obstacles.forEach(obs => {
+                if (obs.element) {
+                    obs.element.remove();
+                }
+            });
+            obstacles = [];
+            
+            bunnyPos = 120;
+            bunnyVelocity = 0;
+            startButton.disabled = true;
+            gameLoop();
+        }
+
+        function restartGame() {
+            startGame();
+        }
+
+        function makeBunnyJump() {
+            if (gameActive && bunnyPos <= 120) {
+                bunnyVelocity = jumpPower;
+            }
+        }
+
+        function gameLoop() {
+            if (!gameActive) return;
+
+            // Update bunny position
+            bunnyVelocity += gravity;
+            bunnyPos += bunnyVelocity;
+
+            // Keep bunny in bounds
+            if (bunnyPos <= 120) {
+                bunnyPos = 120;
+                bunnyVelocity = 0;
+            }
+            if (bunnyPos < 0) {
+                bunnyPos = 0;
+            }
+
+            bunny.style.bottom = bunnyPos + 'px';
+
+            // Spawn obstacles
+            spawnCounter++;
+            if (spawnCounter > spawnRate) {
+                spawnCounter = 0;
+                spawnObstacle();
+            }
+
+            // Update obstacles
+            for (let i = obstacles.length - 1; i >= 0; i--) {
+                const obs = obstacles[i];
+                obs.x -= gameSpeed;
+
+                if (obs.element) {
+                    obs.element.style.left = obs.x + 'px';
+                }
+
+                // Check collision
+                if (checkCollision(obs)) {
+                    endGame();
+                    return;
+                }
+
+                // Remove off-screen obstacles and add score
+                if (obs.x < -50) {
+                    if (obs.element) {
+                        obs.element.remove();
+                    }
+                    obstacles.splice(i, 1);
+                    score++;
+                    scoreDisplay.textContent = score;
+                }
+            }
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        function spawnObstacle() {
+            const obstacle = document.createElement('div');
+            obstacle.className = 'game-obstacle';
+            gameArea.appendChild(obstacle);
+
+            obstacles.push({
+                x: gameArea.offsetWidth,
+                element: obstacle
+            });
+        }
+
+        function checkCollision(obstacle) {
+            const bunnyWidth = 35;
+            const bunnyHeight = 35;
+            const bunnyLeft = 50;
+            const bunnyTop = bunnyPos;
+
+            const obsLeft = obstacle.x;
+            const obsTop = 120;
+            const obsWidth = 40;
+            const obsHeight = 60;
+
+            return !(bunnyLeft + bunnyWidth < obsLeft || 
+                     bunnyLeft > obsLeft + obsWidth || 
+                     bunnyTop + bunnyHeight < obsTop || 
+                     bunnyTop > obsTop + obsHeight);
+        }
+
+        function endGame() {
+            gameActive = false;
+            gameOverScreen.style.display = 'block';
+            finalScore.textContent = 'Final Score: ' + score;
+            startButton.disabled = false;
+        }
+
+        // Event listeners
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                e.preventDefault();
+                makeBunnyJump();
+            }
+        });
+
+        gameArea.addEventListener('click', makeBunnyJump);
+    </script>
+</body>
+</html>
